@@ -1,0 +1,41 @@
+import React from "react";
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS } from "chart.js/auto";
+import data from "../db/data";
+import { format } from 'date-fns';
+
+const BarCart = () => {
+
+  const timestamps = data.map((entry) => new Date(entry.timestamp));
+  const formattedTimestamps = data.map(entry =>
+    format(new Date(entry.timestamp), 'dd MMM HH:mm:ss')
+  );
+  const flowIds = data.map((entry) => entry.flow_id);
+  const srcPorts = data.map((entry) => entry.src_port);
+  const destPorts = data.map((entry) => entry.dest_port);
+  const signatureIds = data.map((entry) => entry.alert?.signature_id);
+  const categories = data.map((entry) => entry.alert?.category);
+
+  const categoryCounts = categories.reduce((acc, category) => {
+    acc[category] = (acc[category] || 0) + 1;
+    return acc;
+  }, {});
+
+  const barData = {
+    labels: srcPorts,
+    datasets: [{
+      label: 'Flow ID',
+      data: flowIds,
+      backgroundColor: 'blue'
+    }]
+  };
+
+
+  return (
+    <div className="p-3 w-100" id="flexApp1" >
+      <Bar data={barData} />
+    </div>
+  );
+};
+
+export default BarCart;
